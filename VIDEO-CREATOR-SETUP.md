@@ -49,130 +49,73 @@ It installs as a Python package. That's it — handled in Section 6b (Installati
 
 ---
 
-## Section 3 — ElevenLabs (Phase 2 — do when ready to upgrade voices)
+## Section 3 — ElevenLabs ✅ Complete
 
-1. Go to [elevenlabs.io](https://elevenlabs.io)
-2. Click **Sign Up** → create account with your Uni-Trend email
-3. After login, go to **Profile → API Keys** (bottom left)
-4. Click **Create API Key** → name it `unitrend-video-creator`
-5. Enable endpoints: **Text to Speech** (Access), **Voices** (Read), **Voice Generation** (Access) — leave all others on No Access
-6. Copy the key (`sk_...`) and save it to `Marketing\Pete\Video Creation Dashboard\` as `elevenlabs-key.txt`
+1. Account created at [elevenlabs.io](https://elevenlabs.io)
+2. API key created — named `unitrend-video-creator`
+3. Endpoints enabled: **Text to Speech** (Access), **Voices** (Read), **Voice Generation** (Access)
+4. Key saved to `Marketing\Pete\Video Creation Dashboard\elevenlabs-key.txt`
 
-**Plan:** Free tier gives 10,000 characters/month (roughly 5–6 short videos). **Starter plan at $22/mo** gives 30,000 characters — enough for ~15–20 product videos per month. Upgrade when you're past prototype stage.
-
-**Where the key goes:** Add to Streamlit secrets alongside the Anthropic key (Section 5).
+**Plan:** Free tier gives 10,000 characters/month. **Starter plan at $22/mo** gives 30,000 characters — enough for ~15–20 product videos per month. Upgrade when past prototype stage.
 
 ---
 
-## Section 4 — GitHub Private Repository
+## Section 4 — GitHub Private Repository ✅ Complete
 
-You'll push the dashboard code here so Streamlit Cloud can deploy it. The repo must stay **private** because it references your secrets structure.
-
-1. Go to [github.com](https://github.com) → sign in (or create a free account)
-2. Click **+** (top right) → **New repository**
-3. Name it: `unitrend-video-creator`
-4. Set to **Private**
-5. Do NOT initialize with README (you'll push existing files)
-6. Click **Create repository**
-7. GitHub shows you a push command — keep this page open for Section 8
-
-> **Note:** If you already have a GitHub account from the social listening project, use the same account. Just create a new repo.
+- Repo: `unitrendus-git/unitrend-video-creator` (Private)
+- URL: `https://github.com/unitrendus-git/unitrend-video-creator.git`
+- Account: `unitrendus@gmail.com`
+- Git identity configured: `Pete Stoermer / unitrendus@gmail.com`
 
 ---
 
 ## Section 5 — Streamlit Cloud Account
 
 1. Go to [share.streamlit.io](https://share.streamlit.io)
-2. Click **Sign in with GitHub** — use the same GitHub account from Section 4
-3. After login, you'll land on your apps dashboard — nothing to configure yet
-4. Come back here after you push code to GitHub (Section 8)
+2. Click **Sign in with GitHub** — use `unitrendus@gmail.com`
+3. After login, you'll land on your apps dashboard
+4. Come back here after `app.py` is built and pushed (Section 8)
 
 ---
 
-## Section 6 — Local Installation
+## Section 6 — Local Installation ✅ Complete
 
-Everything below runs on your local Windows machine in a terminal (PowerShell or Command Prompt). The project folder is:
+All steps verified. Terminal: **PowerShell** (not Command Prompt).
 
-```
-C:\Users\pjsto\OneDrive - Uni-Trend\Documents - Uni-T NA share point\Marketing\Pete\Video Creation Dashboard\
-```
-
-### 6a — Python environment ✅ Complete
-
-Virtual environment created and activated. `(venv)` confirmed in prompt.
-
+Reactivate venv at the start of every session:
 ```powershell
 cd "C:\Users\pjsto\OneDrive - Uni-Trend\Documents - Uni-T NA share point\Marketing\Pete\Video Creation Dashboard"
-python -m venv venv
 venv\Scripts\activate
 ```
 
-> **Note:** If PowerShell blocks the activate script, run this once first:
-> `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+### 6a — Python environment ✅
+Virtual environment created and activated. `(venv)` confirmed in prompt.
 
-### 6b — Install Python dependencies ✅ Complete
+> If PowerShell blocks activation: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 
-All packages installed cleanly.
+### 6b — pip packages ✅
+All packages installed from `requirements.txt`.
 
-```powershell
-pip install -r requirements.txt
-```
+### 6c — Poppler ✅ v26.02.0
+- Installed at: `C:\Program Files\Poppler\poppler-26.02.0\`
+- PATH: `C:\Program Files\Poppler\poppler-26.02.0\Library\bin`
+- Verified: `pdftoppm version 26.02.0`
 
-Installs: `streamlit`, `anthropic`, `edge-tts`, `python-pptx`, `pdf2image`, `Pillow`, `ffmpeg-python`, `requests`, `python-dotenv`
+### 6d — FFmpeg ✅ v8.1.1
+- Installed at: `C:\Program Files\ffmpeg\ffmpeg-8.1.1-essentials_build\`
+- PATH: `C:\Program Files\ffmpeg\ffmpeg-8.1.1-essentials_build\bin`
+- Verified: `ffmpeg version 8.1.1-essentials_build-www.gyan.dev`
 
-### 6c — Install Poppler ✅ Complete — v26.02.0
+### 6e — Secrets file ✅
+- Location: `.streamlit\secrets.toml`
+- Contains: `ANTHROPIC_API_KEY` and `ELEVENLABS_API_KEY`
+- Never committed to GitHub (excluded by `.gitignore`)
 
-Installed at: `C:\Program Files\Poppler\poppler-26.02.0\`  
-PATH entry added: `C:\Program Files\Poppler\poppler-26.02.0\Library\bin`  
-Verified: `pdftoppm version 26.02.0`
-
-To reinstall if needed:
-1. Download from [github.com/oschwartz10612/poppler-windows/releases](https://github.com/oschwartz10612/poppler-windows/releases)
-2. Extract to `C:\Program Files\Poppler\`
-3. Add `...\Library\bin` to System PATH
-4. Restart terminal and verify: `pdftoppm -v`
-
-### 6d — Install FFmpeg ✅ Complete — v8.1.1
-
-Installed at: `C:\Program Files\ffmpeg\ffmpeg-8.1.1-essentials_build\`  
-PATH entry added: `C:\Program Files\ffmpeg\ffmpeg-8.1.1-essentials_build\bin`  
-Verified: `ffmpeg version 8.1.1-essentials_build-www.gyan.dev`
-
-To reinstall if needed:
-1. Download from [gyan.dev/ffmpeg/builds](https://www.gyan.dev/ffmpeg/builds/) → `ffmpeg-release-essentials.zip`
-2. Extract to `C:\Program Files\ffmpeg\`
-3. Add `...\bin` to System PATH
-4. Restart terminal and verify: `ffmpeg -version`
-
-### 6e — Set up local secrets
-
-Create the Streamlit secrets file so the app can find your API keys locally:
-
-```powershell
-mkdir .streamlit
-New-Item .streamlit\secrets.toml
-notepad .streamlit\secrets.toml
-```
-
-Paste and fill in:
-
-```toml
-ANTHROPIC_API_KEY = "sk-ant-YOUR-KEY-HERE"
-ELEVENLABS_API_KEY = "sk_YOUR-KEY-HERE"
-```
-
-Retrieve the Anthropic key from `Marketing\Pete\Anthropic Pete Key.txt`.  
-Retrieve the ElevenLabs key from `Marketing\Pete\Video Creation Dashboard\elevenlabs-key.txt`.
-
-> **Important:** `secrets.toml` must never be committed to GitHub. The `.gitignore` file already excludes it.
-
-### 6f — Run the app locally to test
-
+### 6f — Run locally
 ```powershell
 streamlit run app.py
 ```
-
-Dashboard opens at `http://localhost:8501`. Upload a PDF and confirm script generation works before deploying to the cloud.
+Dashboard opens at `http://localhost:8501`.
 
 ---
 
@@ -185,45 +128,34 @@ All files live in `Marketing\Pete\Video Creation Dashboard\`:
 | `VIDEO-CREATOR-SETUP.md` | ✅ Done | This guide |
 | `requirements.txt` | ✅ Done | Python package list |
 | `.gitignore` | ✅ Done | Keeps secrets and venv out of GitHub |
-| `.streamlit/secrets.toml` | ⬜ Section 6e | Your API keys — local only, never committed |
-| `app.py` | ⬜ Next build | Main Streamlit dashboard |
-| `video_creator_utils.py` | ⬜ Next build | Helper functions: PDF extraction, TTS, FFmpeg assembly |
-| `README.md` | ⬜ Next build | Project README for the GitHub repo |
+| `.streamlit/secrets.toml` | ✅ Done | API keys — local only, never committed |
+| `app.py` | ✅ Done | Main Streamlit dashboard |
+| `video_creator_utils.py` | ⬜ Next | Helper functions: PDF extraction, TTS, FFmpeg assembly |
+| `README.md` | ⬜ Later | Project README for the GitHub repo |
 
 ---
 
 ## Section 8 — Deploy to Streamlit Cloud
 
-Once local testing passes:
+Initial files pushed to GitHub (commit `957ed89`). Once `app.py` is built and tested locally:
 
-1. Initialize Git in the project folder:
-
+1. Stage and push new files:
 ```powershell
-git init
 git add .
-git commit -m "Initial commit — video creator dashboard"
+git commit -m "Add app.py — video creator dashboard"
+git push
 ```
 
-2. Connect to the GitHub repo from Section 4:
-
-```powershell
-git remote add origin https://github.com/YOUR-USERNAME/unitrend-video-creator.git
-git branch -M main
-git push -u origin main
-```
-
-3. Go to [share.streamlit.io](https://share.streamlit.io) → **New app**
-4. Select your GitHub repo → set **Main file path** to `app.py` → click **Deploy**
-5. After deploy, go to **App settings → Secrets** and paste:
+2. Go to [share.streamlit.io](https://share.streamlit.io) → **New app**
+3. Select `unitrendus-git/unitrend-video-creator` → main file: `app.py` → **Deploy**
+4. Go to **App settings → Secrets** and paste:
 
 ```toml
 ANTHROPIC_API_KEY = "sk-ant-YOUR-KEY-HERE"
 ELEVENLABS_API_KEY = "sk_YOUR-KEY-HERE"
 ```
 
-6. Click **Save** — the app restarts with live keys
-
-Your dashboard is now live at a `*.streamlit.app` URL. Control access under **Settings → Sharing**.
+5. Click **Save** — app restarts with live keys
 
 ---
 
@@ -244,10 +176,12 @@ Your dashboard is now live at a `*.streamlit.app` URL. Control access under **Se
 |---|---|
 | Dashboard UI — React prototype | ✅ Done |
 | Environment setup (venv, packages, Poppler, FFmpeg) | ✅ Done |
-| Secrets file (`.streamlit/secrets.toml`) | ⬜ Section 6e |
-| `app.py` — Streamlit Python dashboard | ⬜ Next |
-| Script generation (Claude API + PDF input) | ⬜ Next |
+| Secrets file | ✅ Done |
+| GitHub repo + initial push | ✅ Done |
+| `app.py` — Streamlit dashboard | ✅ Done |
+| Script generation (Claude API + PDF input) | ✅ Done (inside app.py) |
 | Edge TTS — validate timing and pacing | ⬜ Next |
 | FFmpeg assembly — frames + audio + lower-thirds | ⬜ Next |
+| Streamlit Cloud deploy | ⬜ After local test passes |
 | ElevenLabs voice upgrade | ⬜ Phase 2 |
 | 16:9 + 9:16 dual output from same source | ⬜ Phase 2 |
