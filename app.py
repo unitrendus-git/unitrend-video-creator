@@ -353,7 +353,7 @@ def build_voiceover(scenes: dict, model_id: str = "eleven_turbo_v2") -> str:
 DEFAULTS = {
     "scenes": {}, "product_name": "", "status": "idle",
     "log": [], "audio_path": None, "file_bytes": None, "file_name": "",
-    "pending_delete": None,
+    "pending_delete": None, "audio_history": [],
 }
 for k, v in DEFAULTS.items():
     if k not in st.session_state:
@@ -596,18 +596,49 @@ with left:
                 else:
                     asyncio.run(edge_tts.Communicate(full_text, voice_id).save(tmp.name))
                 st.session_state.audio_path = tmp.name
+                # Add to audio history
+                safe_name = (st.session_state.product_name or "product").lower().replace(" ", "_")
+                ts = time.strftime("%Y-%m-%d_%H-%M")
+                audio_label = f"{st.session_state.product_name or 'Product'} — {VOICE_LABELS[voice_idx].split(' —')[0]} — {EL_MODELS.get(el_model_key, el_model_key).split(' —')[0]} — {ts}"
+                audio_filename = f"AUDIO_{safe_name}_{VOICE_LABELS[voice_idx].split(' —')[0].lower().replace(' ','_')}_{ts}.mp3"
+                st.session_state.audio_history.insert(0, {
+                    "label":    audio_label,
+                    "filename": audio_filename,
+                    "path":     tmp.name,
+                    "ts":       ts,
+                })
                 add_log("Audio ready")
                 st.rerun()
             except Exception as e:
                 st.error(f"TTS error: {e}")
                 add_log(f"TTS error: {e}")
 
-    # Audio player
-    if st.session_state.audio_path and os.path.exists(st.session_state.audio_path):
+    # Audio history
+    if st.session_state.audio_history:
         st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("**Audio**")
-        with open(st.session_state.audio_path, "rb") as f:
-            st.audio(f.read(), format="audio/mp3")
+        st.markdown("**Audio history**")
+        st.caption("Most recent first. Files persist until you reset.")
+        for i, entry in enumerate(st.session_state.audio_history):
+            if not os.path.exists(entry["path"]):
+                continue
+            with st.container():
+                st.caption(entry["label"])
+                col_play, col_dl = st.columns([3, 1])
+                with col_play:
+                    with open(entry["path"], "rb") as f:
+                        audio_bytes = f.read()
+                    st.audio(audio_bytes, format="audio/mp3")
+                with col_dl:
+                    st.download_button(
+                        "↓",
+                        data=audio_bytes,
+                        file_name=entry["filename"],
+                        mime="audio/mpeg",
+                        key=f"dl_audio_{i}",
+                        use_container_width=True,
+                        help=f"Download {entry['filename']}",
+                    )
+                st.markdown("<div style='margin-bottom:4px'></div>", unsafe_allow_html=True)
 
     # Metrics
     if st.session_state.scenes:
