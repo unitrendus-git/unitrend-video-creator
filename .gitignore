@@ -1,0 +1,21 @@
+# Secrets — never commit
+.streamlit/secrets.toml
+*.txt
+
+# Python environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Output files
+output/
+*.mp4
+*.mp3
+*.wav
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
